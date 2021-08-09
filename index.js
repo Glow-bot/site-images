@@ -1,0 +1,15 @@
+const express = require("express")
+const app = express()
+const fs = require("fs")
+const p = new Map()
+const main = fs.readFileSync("./index.html","utf-8")
+fs.readdirSync("./commands").map(a=>p.set(a.split(".html").join(""),fs.readFileSync(`./commands/${a}`,"utf-8")))
+const r = Math.floor(Math.random()*100)+8000
+app.listen(r)
+console.log(r)
+app.use("/i",express.static("./i"))
+app.use("/",async(req,res)=>{
+  const a = p.get(req.url.split("/").join(""))
+  if(!a)return res.redirect("https://glow-bot.com/404")
+  res.end(main.replace("<bodycontent></bodycontent>",a))
+})
